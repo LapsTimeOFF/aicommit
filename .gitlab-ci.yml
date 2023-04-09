@@ -23,10 +23,13 @@ build:
   image: registry.lapstime.fr/pnpm_node
   stage: build
   script:
+    - pnpm i -g typescript
     - pnpm run build
   artifacts:
     untracked: false
     when: on_success
-    expire_in: "30 days"
+    expire_in: '30 days'
     paths:
       - bin/
+
+.parallel: 2
