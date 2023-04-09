@@ -1,6 +1,6 @@
 {
   "name": "aicommit",
-  "version": "0.0.1-beta",
+  "version": "1.0.0-rc1",
   "description": "Generate detailed commit messages for your projects using AI 🤯",
   "bin": {
     "aicommit": "./bin/main.js"
