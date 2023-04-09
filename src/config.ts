@@ -9,7 +9,6 @@ export interface IConfig {
 export const homedir = os.homedir();
 
 export const getConfig = (): IConfig | false => {
-
   let config;
 
   try {
@@ -29,10 +28,13 @@ export const getConfig = (): IConfig | false => {
   return config;
 };
 
-export const setConfig = <K extends keyof IConfig>(key: K, value: IConfig[K]): void => {
+export const setConfig = <K extends keyof IConfig>(
+  key: K,
+  value: IConfig[K]
+): void => {
   const config = getConfig();
 
-  if (config === false) 
+  if (config === false)
     return console.log('No config file were found, so a new file got created.');
 
   config[key] = value;
