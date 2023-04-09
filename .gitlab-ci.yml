@@ -18,12 +18,13 @@ eslint:
   stage: lint
   script:
     - pnpm run lint
+  parallel: 2
 
 build:
   image: registry.lapstime.fr/pnpm_node
   stage: build
   script:
-    - pnpm i -g typescript
+    - pnpm i typescript
     - pnpm run build
   artifacts:
     untracked: false
@@ -31,5 +32,4 @@ build:
     expire_in: '30 days'
     paths:
       - bin/
-
-.parallel: 2
+  parallel: 2
