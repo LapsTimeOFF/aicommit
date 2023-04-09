@@ -6,5 +6,8 @@
     "aicommit": "./bin/main.js"
   },
   "author": "LapsTime",
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "dependencies": {
+    "commander": "^10.0.0"
+  }
 }
