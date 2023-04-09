@@ -6,8 +6,9 @@ export interface IConfig {
   emoji?: boolean;
 }
 
+const homedir = os.homedir();
+
 export const getConfig = (): IConfig | false => {
-  const homedir = os.homedir();
 
   let config;
 
@@ -26,4 +27,19 @@ export const getConfig = (): IConfig | false => {
   }
 
   return config;
+};
+
+export const setConfig = <K extends keyof IConfig>(key: K, value: IConfig[K]): void => {
+  const config = getConfig();
+
+  if (config === false) 
+    return console.log('No config file were found, so a new file got created.');
+
+  config[key] = value;
+
+  fs.writeFileSync(path.join(homedir, '.aicommit'), JSON.stringify(config));
+};
+
+export const resetConfig = (): void => {
+  fs.writeFileSync(path.join(homedir, '.aicommit'), JSON.stringify({}));
 };
