@@ -48,7 +48,7 @@ program
       messages: [
         {
           role: 'user',
-          content: `From the result of this "git diff" command, generate a commit message with the following format, "${
+          content: `From the result of this "git diff" command, generate a commit message with the following format, if you want to use '"' use single quote instead "${
             config.emoji === true ? 'emoji' : ''
           } type${
             config.scope === true ? '(scope)' : ''
