@@ -1,0 +1,10 @@
+{
+  "name": "aicommit",
+  "version": "0.0.1-beta",
+  "description": "Generate detailed commit messages for your projects using AI 🤯",
+  "bin": {
+    "aicommit": "./bin/main.js"
+  },
+  "author": "LapsTime",
+  "license": "GPL-3.0"
+}
