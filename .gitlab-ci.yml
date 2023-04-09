@@ -1,0 +1,32 @@
+stages:
+  - lint
+  - build
+
+before_script:
+  - pnpm config set store-dir .pnpm-store
+  - pnpm install
+
+cache:
+  key:
+    files:
+      - pnpm-lock.yaml
+  paths:
+    - .pnpm-store
+
+eslint:
+  image: registry.lapstime.fr/pnpm_node
+  stage: lint
+  script:
+    - pnpm run lint
+
+build:
+  image: registry.lapstime.fr/pnpm_node
+  stage: build
+  script:
+    - pnpm run build
+  artifacts:
+    untracked: false
+    when: on_success
+    expire_in: "30 days"
+    paths:
+      - bin/

@@ -5,6 +5,10 @@
   "bin": {
     "aicommit": "./bin/main.js"
   },
+  "scripts": {
+    "lint": "eslint . --ext .ts",
+    "build": "tsc"
+  },
   "author": "LapsTime",
   "license": "GPL-3.0",
   "dependencies": {
