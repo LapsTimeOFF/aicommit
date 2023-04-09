@@ -4,7 +4,14 @@ import { Option, program } from 'commander';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import packageJSON from '../package.json';
-import { IConfig, getConfig, resetConfig, setConfig } from './config';
+import {
+  IConfig,
+  getConfig,
+  homedir,
+  resetConfig,
+  restoreConfig,
+  setConfig,
+} from './config';
 
 program
   .name(packageJSON.name)
@@ -23,22 +30,32 @@ program
     ).conflicts('get')
   )
   .addOption(
+    new Option('-r, --reset', 'Reset the configuration file to default')
+      .conflicts('get')
+      .conflicts('set')
+  )
+  .addOption(
     new Option(
-      '-r, --reset',
-      'Reset the configuration file to default'
-    ).conflicts('get').conflicts('set')
+      '-R, --restore <path>',
+      'Restore the configuration file from a backup'
+    )
+      .conflicts('get')
+      .conflicts('set')
+      .conflicts('reset')
   )
   .action(
     async ({
       get,
       set,
       verbose,
-      reset
+      reset,
+      restore,
     }: {
       get?: keyof IConfig;
       set?: string;
       verbose?: boolean;
       reset?: boolean;
+      restore?: string;
     }) => {
       // Force verbose if the command the developer is running is the main.ts file
       if (process.argv.map((arg) => arg.includes('src/main.ts')).includes(true))
@@ -67,9 +84,17 @@ program
             break;
         }
       }
-      if(reset === true) {
+      if (reset === true) {
         console.log('🔥 Resetting configuration file...');
         resetConfig();
+        console.log(
+          `😎 KABOOM, config is GONE... (but a new one got created, also we backed up the old one at ${homedir}/.aicommit.old)`
+        );
+      }
+      if (restore !== undefined) {
+        console.log(`🔥 Restoring configuration file from ${restore}...`);
+        restoreConfig(restore);
+        console.log('😎 KABOOM, config is RESTORED...');
       }
     }
   );

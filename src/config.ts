@@ -6,7 +6,7 @@ export interface IConfig {
   emoji?: boolean;
 }
 
-const homedir = os.homedir();
+export const homedir = os.homedir();
 
 export const getConfig = (): IConfig | false => {
 
@@ -41,5 +41,13 @@ export const setConfig = <K extends keyof IConfig>(key: K, value: IConfig[K]): v
 };
 
 export const resetConfig = (): void => {
+  const config = getConfig();
+  fs.writeFileSync(path.join(homedir, '.aicommit.old'), JSON.stringify(config));
   fs.writeFileSync(path.join(homedir, '.aicommit'), JSON.stringify({}));
+};
+
+export const restoreConfig = (pathBackup: string): void => {
+  const backup = fs.readFileSync(pathBackup).toString();
+
+  fs.writeFileSync(path.join(homedir, '.aicommit'), backup);
 };
