@@ -14,6 +14,9 @@ export const getDiff = (): string => {
 export const commit = (message: string): string => {
   return childProcess.execSync(`git commit -m "${message}"`).toString();
 };
+export const push = (): string => {
+  return childProcess.execSync('git push').toString();
+};
 
 export const getStagedFiles = (): string[] => {
   const stdout = childProcess.execSync('git diff --staged --name-only').toString();
