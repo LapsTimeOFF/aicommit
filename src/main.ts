@@ -16,7 +16,7 @@ import {
   restoreConfig,
   setConfig,
 } from './config';
-import { commit, getDiff, getStagedFiles } from './git';
+import { commit, getDiff, getStagedFiles, push } from './git';
 
 program
   .name(packageJSON.name)
@@ -95,11 +95,17 @@ program
         },
         {
           role: 'assistant',
-          content: `${config.emoji === true ? '🎉' : ''} feat${config.scope === true ? '(main)' : ''}: Adding prompt to train GPT-3.5`,
+          content: `${config.emoji === true ? '🎉' : ''} feat${
+            config.scope === true ? '(main)' : ''
+          }: Adding prompt to train GPT-3.5`,
         },
         {
           role: 'user',
-          content: `Do the same thing for this git diff, ${config.emoji === true ? 'For the emojis, use the following rule: type->emoji; feat->✨; fix->🐛; docs->📚; style->💎; refactor->📦; perf->🚀; test->🚨; build->🛠️; ci->⚙️; chore->♻️; revert->🗑️;' : ''}:\n${diff}`,
+          content: `Do the same thing for this git diff, ${
+            config.emoji === true
+              ? 'For the emojis, use the following rule: type->emoji; feat->✨; fix->🐛; docs->📚; style->💎; refactor->📦; perf->🚀; test->🚨; build->🛠️; ci->⚙️; chore->♻️; revert->🗑️;'
+              : ''
+          }:\n${diff}`,
         },
       ],
       key: '',
@@ -136,6 +142,17 @@ program
         text: 'Committed!',
       });
       console.log(commitCmd);
+      if (config.autoPush === true) {
+        const spinner = createSpinner('Pushing...').start();
+        const pushCmd = push();
+        spinner.success({
+          text: 'Pushed!',
+        });
+        console.log(pushCmd);
+      } else
+        console.log(
+          '⚠️ Auto push is disabled, so you have to push manually. You can enable it by running "aiconfig config -s autoPush=true"'
+        );
     }
   });
 
@@ -202,6 +219,7 @@ program
         switch (key) {
           case 'scope':
           case 'emoji':
+          case 'autoPush':
             setConfig(key, value === 'true');
             break;
         }
