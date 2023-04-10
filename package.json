@@ -1,5 +1,5 @@
 {
-  "name": "aicommit",
+  "name": "@lapstimef1/aicommit",
   "version": "1.0.0",
   "description": "Generate detailed commit messages for your projects using AI 🤯",
   "bin": {
