@@ -43,76 +43,80 @@ program
     const diff = getDiff();
     if (diff === '') return console.log('⚠️ No changes to commit.');
 
-    const demoDiff = [
-      'diff --git a/src/main.ts b/src/main.ts',
-      'index bf5371f..3dfc75d 100644',
-      '--- a/src/main.ts',
-      '+++ b/src/main.ts',
-      '@@ -43,6 +43,9 @@ program',
-      '     const diff = getDiff();',
-      '     if (diff === \'\') return console.log(\'⚠️ No changes to commit.\');',
-      '',
-      '+    const demoDiff = `diff --git a/src/main.ts b/src/main.ts',
-      '+',
-      '     const body = {',
-      '       model: { id: \'gpt-3.5-turbo\', name: \'Default (GPT-3.5)\' },',
-      '       messages: [',
-      '@@ -54,6 +57,22 @@ program',
-      '             config.scope === true ? \'(scope)\' : \'\'',
-      '           }: description"\n${diff}`,',
-      '         },',
-      '+        {',
-      '+          role: \'assistent\',',
-      '+          content: `From the result of this "git diff" command, generate a commit message with the following format, if you want to use \'"\' use single quote instead "${',
-      '+            config.emoji === true ? \'emoji\' : \'\'',
-      '+          } type${',
-      '+            config.scope === true ? \'(scope)\' : \'\'',
-      '+          }: description"\n${diff}`,',
-      '+        },',
-      '+        {',
-      '+          role: \'user\',',
-      '+          content: `From the result of this "git diff" command, generate a commit message with the following format, if you want to use \'"\' use single quote instead "${',
-      '+            config.emoji === true ? \'emoji\' : \'\'',
-      '+          } type${',
-      '+            config.scope === true ? \'(scope)\' : \'\'',
-      '+          }: description"\n${diff}`,',
-      '+        },',
-      '       ],',
-      '       key: \'\',',
-      '       prompt: \'You are a helpful assistant\',',
-    ].join('\n');
-
     const body = {
       model: { id: 'gpt-3.5-turbo', name: 'Default (GPT-3.5)' },
       messages: [
         {
+          role: 'system',
+          content: `You are to act as the author of a commit message in git. Your mission is to create clean and comprehensive commit messages in the conventional commit convention and explain why a change was done. I'll send you an output of 'git diff --staged' command, and you convert it into a commit message.
+          ${
+            config?.emoji
+              ? 'Use GitMoji convention to preface the commit.'
+              : 'Do not preface the commit with anything.'
+          }
+          ${
+            config?.scope
+              ? 'Use a scope (example: "type(scope): msg").'
+              : 'Do not preface the commit with anything.'
+          }
+          ${
+            config?.description
+              ? 'Add a short description of WHY the changes are done after the commit message. Don\'t start it with "This commit", just describe the changes.'
+              : 'Don\'t add any descriptions to the commit, only commit message.'
+          }
+          Use the present tense. Lines must not be longer than 74 characters.`,
+        },
+        {
           role: 'user',
-          content: `From the result of this "git diff" command, generate a commit message with the following format, if you want to use '"' use single quote instead also, return only the commit message, NOTHING ELSE. And be precise in what has been changed "${
-            config.emoji === true ? 'emoji' : ''
-          } type${
-            config.scope === true ? '(scope)' : ''
-          }: description"\n${demoDiff}`,
+          content: `diff --git a/src/server.ts b/src/server.ts
+          index ad4db42..f3b18a9 100644
+          --- a/src/server.ts
+          +++ b/src/server.ts
+          @@ -10,7 +10,7 @@
+          import {
+            initWinstonLogger();
+            
+            const app = express();
+           -const port = 7799;
+           +const PORT = 7799;
+            
+            app.use(express.json());
+            
+          @@ -34,6 +34,6 @@
+          app.use((_, res, next) => {
+            // ROUTES
+            app.use(PROTECTED_ROUTER_URL, protectedRouter);
+            
+           -app.listen(port, () => {
+           -  console.log(\`Server listening on port \${port}\`);
+           +app.listen(process.env.PORT || PORT, () => {
+           +  console.log(\`Server listening on port \${PORT}\`);
+            });`,
         },
         {
           role: 'assistant',
-          content: `${config.emoji === true ? '🎉' : ''} feat${
-            config.scope === true ? '(main)' : ''
-          }: Adding prompt to train GPT-3.5`,
+          content: `${
+  config?.emoji ? '🐛 ' : ''
+}fix(server.ts): change port variable case from lowercase port to uppercase PORT
+${
+  config?.emoji ? '✨ ' : ''
+}feat(server.ts): add support for process.env.PORT environment variable
+${
+  config?.description
+    ? 'The port variable is now named PORT, which improves consistency with the naming conventions as PORT is a constant. Support for an environment variable allows the application to be more flexible as it can now run on any available port specified via the process.env.PORT environment variable.'
+    : ''
+}`,
         },
         {
           role: 'user',
-          content: `Do the same thing for this git diff, ${
-            config.emoji === true
-              ? 'For the emojis, use the following rule: type->emoji; feat->✨; fix->🐛; docs->📚; style->💎; refactor->📦; perf->🚀; test->🚨; build->🛠️; ci->⚙️; chore->♻️; revert->🗑️;'
-              : ''
-          }:\n${diff}`,
+          content: diff,
         },
       ],
       key: '',
       prompt: 'You are a helpful assistant',
     };
 
-    if (verbose) console.log(body.messages[2].content);
+    if (verbose) console.log(body.messages[3].content);
     const spinner = createSpinner('Generating commit message...').start();
 
     const response = await axios({
@@ -220,6 +224,7 @@ program
           case 'scope':
           case 'emoji':
           case 'autoPush':
+          case 'description':
             setConfig(key, value === 'true');
             break;
         }
