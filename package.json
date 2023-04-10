@@ -1,0 +1,26 @@
+{
+  "name": "aicommit",
+  "version": "1.0.0-rc2",
+  "description": "Generate detailed commit messages for your projects using AI 🤯",
+  "bin": {
+    "aicommit": "./bin/main.js"
+  },
+  "scripts": {
+    "lint": "eslint . --ext .ts",
+    "build": "tsc"
+  },
+  "author": "LapsTime",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "axios": "^1.3.5",
+    "commander": "^10.0.0",
+    "inquirer": "^8.2.5",
+    "nanospinner": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^9.0.3",
+    "@typescript-eslint/eslint-plugin": "^5.57.1",
+    "@typescript-eslint/parser": "^5.57.1",
+    "eslint": "^8.38.0"
+  }
+}
