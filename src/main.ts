@@ -43,23 +43,70 @@ program
     const diff = getDiff();
     if (diff === '') return console.log('⚠️ No changes to commit.');
 
+    const demoDiff = [
+      'diff --git a/src/main.ts b/src/main.ts',
+      'index bf5371f..3dfc75d 100644',
+      '--- a/src/main.ts',
+      '+++ b/src/main.ts',
+      '@@ -43,6 +43,9 @@ program',
+      '     const diff = getDiff();',
+      '     if (diff === \'\') return console.log(\'⚠️ No changes to commit.\');',
+      '',
+      '+    const demoDiff = `diff --git a/src/main.ts b/src/main.ts',
+      '+',
+      '     const body = {',
+      '       model: { id: \'gpt-3.5-turbo\', name: \'Default (GPT-3.5)\' },',
+      '       messages: [',
+      '@@ -54,6 +57,22 @@ program',
+      '             config.scope === true ? \'(scope)\' : \'\'',
+      '           }: description"\n${diff}`,',
+      '         },',
+      '+        {',
+      '+          role: \'assistent\',',
+      '+          content: `From the result of this "git diff" command, generate a commit message with the following format, if you want to use \'"\' use single quote instead "${',
+      '+            config.emoji === true ? \'emoji\' : \'\'',
+      '+          } type${',
+      '+            config.scope === true ? \'(scope)\' : \'\'',
+      '+          }: description"\n${diff}`,',
+      '+        },',
+      '+        {',
+      '+          role: \'user\',',
+      '+          content: `From the result of this "git diff" command, generate a commit message with the following format, if you want to use \'"\' use single quote instead "${',
+      '+            config.emoji === true ? \'emoji\' : \'\'',
+      '+          } type${',
+      '+            config.scope === true ? \'(scope)\' : \'\'',
+      '+          }: description"\n${diff}`,',
+      '+        },',
+      '       ],',
+      '       key: \'\',',
+      '       prompt: \'You are a helpful assistant\',',
+    ].join('\n');
+
     const body = {
       model: { id: 'gpt-3.5-turbo', name: 'Default (GPT-3.5)' },
       messages: [
         {
           role: 'user',
-          content: `From the result of this "git diff" command, generate a commit message with the following format, if you want to use '"' use single quote instead "${
+          content: `From the result of this "git diff" command, generate a commit message with the following format, if you want to use '"' use single quote instead also, return only the commit message, NOTHING ELSE. And be precise in what has been changed "${
             config.emoji === true ? 'emoji' : ''
           } type${
             config.scope === true ? '(scope)' : ''
-          }: description"\n${diff}`,
+          }: description"\n${demoDiff}`,
+        },
+        {
+          role: 'assistant',
+          content: `${config.emoji === true ? '🎉' : ''} feat${config.scope === true ? '(main)' : ''}: Adding prompt to train GPT-3.5`,
+        },
+        {
+          role: 'user',
+          content: `Do the same thing for this git diff, ${config.emoji === true ? 'For the emojis, use the following rule: type->emoji; feat->✨; fix->🐛; docs->📚; style->💎; refactor->📦; perf->🚀; test->🚨; build->🛠️; ci->⚙️; chore->♻️; revert->🗑️;' : ''}:\n${diff}`,
         },
       ],
       key: '',
       prompt: 'You are a helpful assistant',
     };
 
-    if (verbose) console.log(body.messages[0].content);
+    if (verbose) console.log(body.messages[2].content);
     const spinner = createSpinner('Generating commit message...').start();
 
     const response = await axios({
@@ -84,10 +131,11 @@ program
 
     if (answers.commit === true) {
       const spinner = createSpinner('Committing...').start();
-      console.log(commit(commitmsg));
+      const commitCmd = commit(commitmsg);
       spinner.success({
         text: 'Committed!',
       });
+      console.log(commitCmd);
     }
   });
 
