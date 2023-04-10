@@ -78,14 +78,14 @@
 2. Init your configuration:
 
     ```sh
-        aicommit config -g emoji
+    aicommit config -g emoji
     ```
 
     This will create your config file.
 3. Set the keys of the config:
 
     ```sh
-        aicommit config -s <key>=<value>
+    aicommit config -s <key>=<value>
     ```
 
 Available keys:
@@ -105,9 +105,6 @@ Available keys:
 ## Usage
 
 Install the package like the previous step says, then in your git project, add a file `git add (file name)`, then do `aicommit`.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 See the [open issues](https://github.com/LapsTimeOFF/aicommit/issues) for a full list of proposed features (and known issues).
 
@@ -145,7 +142,7 @@ Distributed under the GPL-v3.0 License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@lapstime_](https://twitter.com/lapstime_) - contact@lapstime.fr
+LapsTime - [@lapstime_](https://twitter.com/lapstime_) - contact@lapstime.fr
 
 Project Link: [https://github.com/LapsTimeOFF/aicommit](https://github.com/LapsTimeOFF/aicommit)
 
