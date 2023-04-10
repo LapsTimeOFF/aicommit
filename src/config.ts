@@ -5,6 +5,7 @@ import path from 'path';
 export interface IConfig {
   emoji?: boolean;
   scope?: boolean;
+  autoPush?: boolean;
 }
 
 export const homedir = os.homedir();
