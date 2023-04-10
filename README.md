@@ -64,15 +64,15 @@
 
     * npm
     ```sh
-    npm install aicommit -g
+    npm install @lapstimef1/aicommit -g
     ```
     * yarn
     ```sh
-    yarn add aicommit -g
+    yarn add @lapstimef1/aicommit -g
     ```
     * pnpm
     ```sh
-    pnpm i -g aicommit
+    pnpm i -g @lapstimef1/aicommit
     ```
 
 2. Init your configuration:
