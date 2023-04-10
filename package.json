@@ -5,6 +5,7 @@
   "bin": {
     "aicommit": "./bin/main.js"
   },
+  "private": false,
   "scripts": {
     "lint": "eslint . --ext .ts",
     "build": "tsc"
