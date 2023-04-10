@@ -50,17 +50,17 @@ program
           role: 'system',
           content: `You are to act as the author of a commit message in git. Your mission is to create clean and comprehensive commit messages in the conventional commit convention and explain why a change was done. I'll send you an output of 'git diff --staged' command, and you convert it into a commit message.
           ${
-            config?.emoji
+            config?.emoji === true
               ? 'Use GitMoji convention to preface the commit.'
               : 'Do not preface the commit with anything.'
           }
           ${
-            config?.scope
+            config?.scope === true
               ? 'Use a scope (example: "type(scope): msg").'
               : 'Do not preface the commit with anything.'
           }
           ${
-            config?.description
+            config?.description === true
               ? 'Add a short description of WHY the changes are done after the commit message. Don\'t start it with "This commit", just describe the changes.'
               : 'Don\'t add any descriptions to the commit, only commit message.'
           }
@@ -96,13 +96,13 @@ program
         {
           role: 'assistant',
           content: `${
-  config?.emoji ? '🐛 ' : ''
+  config?.emoji === true ? '🐛 ' : ''
 }fix(server.ts): change port variable case from lowercase port to uppercase PORT
 ${
-  config?.emoji ? '✨ ' : ''
+  config?.emoji  === true? '✨ ' : ''
 }feat(server.ts): add support for process.env.PORT environment variable
 ${
-  config?.description
+  config?.description === true
     ? 'The port variable is now named PORT, which improves consistency with the naming conventions as PORT is a constant. Support for an environment variable allows the application to be more flexible as it can now run on any available port specified via the process.env.PORT environment variable.'
     : ''
 }`,
