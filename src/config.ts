@@ -6,6 +6,7 @@ export interface IConfig {
   emoji?: boolean;
   scope?: boolean;
   autoPush?: boolean;
+  description?: boolean;
 }
 
 export const homedir = os.homedir();
